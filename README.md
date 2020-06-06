@@ -7,6 +7,7 @@ For example:
 Input: 
 
 Relationship : Paternal great grand uncle
+
 Subject : Richard II
 
 Output:
@@ -24,6 +25,7 @@ Inputs:
 #In format [Subject_1 , Subject_2 , Relationship] -> Subject 1 is of a Relationship to Subject 2
 
 Edward the Black Prince , Richard II , Father
+
 John of Gaunt , Richard II , Uncle
 
 From here, it can be deduced that Richard II is the nephew of John of Gaunt, hence the new relationship
