@@ -102,63 +102,210 @@ class FamilyTreeSearch(Person):
         if subject not in IDENTITY_Lib:
             print("Person not found in data or invalid form ! ")
             return 0
-        else:
-            ID=IDENTITY_Lib[subject]
         if lexical_analysis(transitions) == False:
             print("Invalid relationship or format ")
             return 0
         else:
             possible=[]
+            ID=IDENTITY_Lib[subject]
+            print(type(ID))
             for word in transitions:
                 if word=="brother":
                     possible=self.brother(ID)
                 elif word=="sister":
                     possible=self.sister(ID)
-        
-        
-        pass
+                elif word=="son":
+                    possible=self.son(ID)
+                elif word=="daughter":
+                    possible=self.daughter(ID)
+                elif word=="father" or word=="paternal":
+                    possible=self.father(ID)
+                elif word=="mother" or word=="maternal":
+                    possible=self.mother(ID)
+                elif word=="siblings":
+                    possible=self.siblings()
+                elif word=="uncle":
+                    if "paternal" in transitions:
+                        possible=self.uncle(True)
+                    elif "maternal" in transitions:
+                        possible=self.uncle(False)
+                    else:
+                        possible=self.uncle(True)+self.uncle(False)
+                elif word=="auntie":
+                    if "paternal" in transitions:
+                        possible=self.auntie(True)
+                    elif "maternal" in transitions:
+                        possible=self.auntie(False)
+                    else:
+                        possible=self.auntie(True)+self.auntie(False)
+                elif word=="grand" or "great":
+                    if "paternal" in transitions:
+                        possible=self.grand(True)
+                    elif "maternal" in transitions:
+                        possible=self.grand(False)
+                    else:
+                        possible=self.grand(True)+self.great(False)
+        if len(possible)==0:
+            print("No one in data or no one matched the relationship")
+        else:
+            print("The people is/are:")
+            for human in possible:
+                print(IDENTITY_Lib[human.id_].name)
+                if IDENTITY_Lib[human.id_].title is not None:
+                    print(IDENTITY_Lib[human.id_].title)
+                else:
+                    continue
     
     def brother(identity_number):
-        pass
+        person=IDENTITY_Lib[identity_number].brother
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
+            
     
     def sister(identity_number):
-        pass
+        person=IDENTITY_Lib[identity_number].sister
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
+    
     
     def father(identity_number):
-        pass
+        person=IDENTITY_Lib(identity_number).dad
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
     
     def mother(identity_number):
-        pass
+        person=IDENTITY_Lib(identity_number).mom
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
     
-    def uncle(identity_number):
-        pass
+    def uncle(identity_number,paternal=True):
+        '''
+        Either the maternal side or the paternal side brother
+        '''
+        if paternal==True:
+            person=IDENTITY_Lib(identity_number).dad
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                info=IDENTITY_Lib(person[0]).brothers
+                if len(info)>0:
+                    return list(info)
+                else:
+                    print("There is no one matching the relationship")
+                    return list()
+        else:
+            person=IDENTITY_Lib(identity_number).mom
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                info=IDENTITY_Lib(person[0]).brothers
+                if len(info)>0:
+                    return list(info)
+                else:
+                    print("There is no one matching the relationship")
+                    return list()
+            
+            
     
-    def auntie(identity_number):
-        pass
+    def auntie(identity_number,paternal=True):
+        if paternal==True:
+            person=IDENTITY_Lib(identity_number).dad
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                info=IDENTITY_Lib(person[0]).sisters
+                if len(info)>0:
+                    return list(info)
+                else:
+                    print("There is no one matching the relationship")
+                    return list()
+        else:
+            person=IDENTITY_Lib(identity_number).mom
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                info=IDENTITY_Lib(person[0]).sisters
+                if len(info)>0:
+                    return list(info)
+                else:
+                    print("There is no one matching the relationship")
+                    return list()
     
-    def great(identity_number):
-        pass
+    def great(identity_number,paternal=True):
+        #To go up one generation"
+        if paternal==True:
+            person=IDENTITY_Lib(identity_number).dad
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                person
+        else:
+            person=IDENTITY_Lib(identity_number).mom
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                return list(person)
     
-    def grand(identity_number):
-        pass
+    def grand(identity_number,paternal=True):
+        #To go up one generation"
+        if paternal==True:
+            person=IDENTITY_Lib(identity_number).dad
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                person
+        else:
+            person=IDENTITY_Lib(identity_number).mom
+            if len(person)==0:
+                print("There is no one matching the relationship")
+                return list()
+            else:
+                return list(person)
+       
     
-    def cousin(identity_number):
-        pass
     
     def siblings(identity_number):
-        pass
-    
-    def maternal(identity_number):
-        pass
-    
-    def paternal(identity_number):
-        pass
+        person=IDENTITY_Lib[identity_number].sister + IDENTITY_Lib[identity_number].brother
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
     
     def son(identity_number):
-        pass
+        person=IDENTITY_Lib(identity_number).son
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
     
     def daughter(identity_number):
-        pass
+        person=IDENTITY_Lib(identity_number).daughter
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
     
     
                 
@@ -184,7 +331,7 @@ def format_and_parse():
 if __name__=="__main__":
     format_and_parse()
     IDENTITY_Lib=identity_dict(members)
-    IDENTITY_Lib["1"].introduce()
-    print(IDENTITY_Lib["Alfred the Great"])
+    FamilyTreeSearch(IDENTITY_Lib).search()
+    
 
      
