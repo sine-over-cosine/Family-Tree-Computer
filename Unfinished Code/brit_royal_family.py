@@ -8,17 +8,21 @@ def identity_dict(person):
     library=dict()
     for human in person:
         library[human.id_]=human
+    return library
+    
+def name_query(person):
+    library=dict()
+    for human in person:
         library[human.name]=human.id_
     return library
     
-
 
 
 def lexical_analysis(transitions):
     #transitions is an array of words
     accepted_words=["brother","sister","father","mother",
                     "uncle","auntie","great","grand","cousin",
-                    "siblings","paternal","maternal","son","daughter"]
+                    "siblings","paternal","maternal","son","daughter","spouse"]
     for word in transitions:
         if word not in accepted_words:
             print("Invalid relationship. Unreadable")
@@ -30,11 +34,14 @@ def lexical_analysis(transitions):
 
 class Person():
     def __init__(self,id_,name,title,dad,mom,spouse,brother,sister,son,daughter):
-        self.name=name
+        if name[-1]==" ":
+            self.name=name[:-1]
+        else:
+            self.name=name
         self.id_=id_
         self.title=title
-        self.dad=dad
-        self.mom=mom
+        self.dad=list(dad.split(" "))
+        self.mom=list(mom.split(" "))
         self.spouse=list(spouse.split(","))
         self.brother=list(brother.split(","))
         self.sister=list(sister.split(","))
@@ -96,19 +103,24 @@ class FamilyTreeSearch(Person):
         self.members=members
         
     def search(self):
-        transitions=input("Relationship").lower().split(" ")
-        subject=input("Enter a name")
+        relationship=input("Relationship\n")
+        transitions=relationship.lower().split(" ")
+        subject=input("Enter a name\n")
         #We need to get the subject's ID at this point
-        if subject not in IDENTITY_Lib:
+        if subject not in NAME_Lib:
             print("Person not found in data or invalid form ! ")
             return 0
+        for mini_id in IDENTITY_Lib:
+            if IDENTITY_Lib[mini_id].name==subject:
+                print("ID: {} , NAME: {}, TITLE : {}".format(mini_id,self.members[mini_id].name,self.members[mini_id].title))
+            else:
+                continue
+        ID=input("Enter one of the above ID--Will return a wrong answer otherwise \n")
         if lexical_analysis(transitions) == False:
             print("Invalid relationship or format ")
             return 0
         else:
             possible=[]
-            ID=IDENTITY_Lib[subject]
-            print(type(ID))
             for word in transitions:
                 if word=="brother":
                     possible=self.brother(ID)
@@ -123,7 +135,7 @@ class FamilyTreeSearch(Person):
                 elif word=="mother" or word=="maternal":
                     possible=self.mother(ID)
                 elif word=="siblings":
-                    possible=self.siblings()
+                    possible=self.siblings(ID)
                 elif word=="uncle":
                     if "paternal" in transitions:
                         possible=self.uncle(True)
@@ -138,23 +150,27 @@ class FamilyTreeSearch(Person):
                         possible=self.auntie(False)
                     else:
                         possible=self.auntie(True)+self.auntie(False)
-                elif word=="grand" or "great":
+                elif word=="grand" or word=="great":
                     if "paternal" in transitions:
                         possible=self.grand(True)
                     elif "maternal" in transitions:
                         possible=self.grand(False)
                     else:
                         possible=self.grand(True)+self.great(False)
+                elif word=="spouse":
+                    possible=self.spouse(ID)
         if len(possible)==0:
             print("No one in data or no one matched the relationship")
         else:
-            print("The people is/are:")
-            for human in possible:
-                print(IDENTITY_Lib[human.id_].name)
-                if IDENTITY_Lib[human.id_].title is not None:
-                    print(IDENTITY_Lib[human.id_].title)
-                else:
+            print("{} 's {} is/are':".format(subject,relationship))
+            for t in possible:
+                if t == "None":
                     continue
+                else:
+                    if IDENTITY_Lib[t].title is not None:
+                        print(IDENTITY_Lib[t].name,",",IDENTITY_Lib[t].title)
+                    else:
+                        print(IDENTITY_Lib[t].name)
     
     def brother(identity_number):
         person=IDENTITY_Lib[identity_number].brother
@@ -174,16 +190,17 @@ class FamilyTreeSearch(Person):
             return person
     
     
-    def father(identity_number):
-        person=IDENTITY_Lib(identity_number).dad
+    def father(self,identity_number):
+        person=IDENTITY_Lib[identity_number].dad
+        print(person)
         if len(person)==0:
             print("There is no one matching the relationship")
             return list()
         else:
-            return person
+            return list(person)
     
     def mother(identity_number):
-        person=IDENTITY_Lib(identity_number).mom
+        person=IDENTITY_Lib[identity_number].mom
         if len(person)==0:
             print("There is no one matching the relationship")
             return list()
@@ -195,12 +212,12 @@ class FamilyTreeSearch(Person):
         Either the maternal side or the paternal side brother
         '''
         if paternal==True:
-            person=IDENTITY_Lib(identity_number).dad
+            person=IDENTITY_Lib[identity_number].dad
             if len(person)==0:
                 print("There is no one matching the relationship")
                 return list()
             else:
-                info=IDENTITY_Lib(person[0]).brothers
+                info=IDENTITY_Lib[person[0]].brothers
                 if len(info)>0:
                     return list(info)
                 else:
@@ -212,7 +229,7 @@ class FamilyTreeSearch(Person):
                 print("There is no one matching the relationship")
                 return list()
             else:
-                info=IDENTITY_Lib(person[0]).brothers
+                info=IDENTITY_Lib[person[0]].brothers
                 if len(info)>0:
                     return list(info)
                 else:
@@ -223,24 +240,24 @@ class FamilyTreeSearch(Person):
     
     def auntie(identity_number,paternal=True):
         if paternal==True:
-            person=IDENTITY_Lib(identity_number).dad
+            person=IDENTITY_Lib[identity_number].dad
             if len(person)==0:
                 print("There is no one matching the relationship")
                 return list()
             else:
-                info=IDENTITY_Lib(person[0]).sisters
+                info=IDENTITY_Lib[person[0]].sisters
                 if len(info)>0:
                     return list(info)
                 else:
                     print("There is no one matching the relationship")
                     return list()
         else:
-            person=IDENTITY_Lib(identity_number).mom
+            person=IDENTITY_Lib[identity_number].mom
             if len(person)==0:
                 print("There is no one matching the relationship")
                 return list()
             else:
-                info=IDENTITY_Lib(person[0]).sisters
+                info=IDENTITY_Lib[person[0]].sisters
                 if len(info)>0:
                     return list(info)
                 else:
@@ -250,14 +267,14 @@ class FamilyTreeSearch(Person):
     def great(identity_number,paternal=True):
         #To go up one generation"
         if paternal==True:
-            person=IDENTITY_Lib(identity_number).dad
+            person=IDENTITY_Lib[identity_number].dad
             if len(person)==0:
                 print("There is no one matching the relationship")
                 return list()
             else:
                 person
         else:
-            person=IDENTITY_Lib(identity_number).mom
+            person=IDENTITY_Lib[identity_number].mom
             if len(person)==0:
                 print("There is no one matching the relationship")
                 return list()
@@ -267,14 +284,14 @@ class FamilyTreeSearch(Person):
     def grand(identity_number,paternal=True):
         #To go up one generation"
         if paternal==True:
-            person=IDENTITY_Lib(identity_number).dad
+            person=IDENTITY_Lib[identity_number].dad
             if len(person)==0:
                 print("There is no one matching the relationship")
                 return list()
             else:
                 person
         else:
-            person=IDENTITY_Lib(identity_number).mom
+            person=IDENTITY_Lib[identity_number].mom
             if len(person)==0:
                 print("There is no one matching the relationship")
                 return list()
@@ -283,7 +300,7 @@ class FamilyTreeSearch(Person):
        
     
     
-    def siblings(identity_number):
+    def siblings(self,identity_number):
         person=IDENTITY_Lib[identity_number].sister + IDENTITY_Lib[identity_number].brother
         if len(person)==0:
             print("There is no one matching the relationship")
@@ -292,7 +309,7 @@ class FamilyTreeSearch(Person):
             return person
     
     def son(identity_number):
-        person=IDENTITY_Lib(identity_number).son
+        person=IDENTITY_Lib[identity_number].son
         if len(person)==0:
             print("There is no one matching the relationship")
             return list()
@@ -300,14 +317,20 @@ class FamilyTreeSearch(Person):
             return person
     
     def daughter(identity_number):
-        person=IDENTITY_Lib(identity_number).daughter
+        person=IDENTITY_Lib[identity_number].daughter
         if len(person)==0:
             print("There is no one matching the relationship")
             return list()
         else:
             return person
     
-    
+    def spouse(self,identity_number):
+        person=IDENTITY_Lib[identity_number].spouse
+        if len(person)==0:
+            print("There is no one matching the relationship")
+            return list()
+        else:
+            return person
                 
         
 members=list()
@@ -331,7 +354,9 @@ def format_and_parse():
 if __name__=="__main__":
     format_and_parse()
     IDENTITY_Lib=identity_dict(members)
+    NAME_Lib=name_query(members)
+    print(IDENTITY_Lib["191"].name=="Victoria")
     FamilyTreeSearch(IDENTITY_Lib).search()
-    
+    #print(IDENTITY_Lib["258"].brother)
 
      
