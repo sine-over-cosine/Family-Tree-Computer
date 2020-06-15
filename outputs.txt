@@ -1,0 +1,52 @@
+Relationship
+spouse
+
+Enter a name
+Henry VIII
+ID: 107 , NAME: Henry VIII, TITLE : King of England
+
+Enter one of the above ID--Will return a wrong answer otherwise 
+107
+Henry VIII 's spouse is/are':
+Catherine of Aragon , Queen Consort of England
+Anne Boleyn , Queen Consort of England
+Jane Seymour , Queen Consort of England
+Anne of Cleves , Queen Consort of England
+Catherine Howard , Queen Consort of England
+Catherine Parr , Queen Consort of England
+
+----------------------------------------------------------------
+Relationship
+siblings
+
+Enter a nameEdward
+ID: 172 , NAME: Edward, TITLE : Duke of York
+ID: 184 , NAME: Edward, TITLE : Duke of Kent
+ID: 230 , NAME: Edward, TITLE : Duke of Kent
+ID: 237 , NAME: Edward, TITLE : Earl of Wessex
+
+Enter one of the above ID--Will return a wrong answer otherwise 
+172
+The people is/are:
+Caroline Matilda , Princess of Great Britain
+Augusta , Princess of Great Britain
+Henry , Duke of Cumberland
+George III , King of Great Britain
+William Henry , Duke of Gloucester
+
+----------------------------------------------------------------
+
+Relationship
+children
+
+Enter a name
+William The Conqueror
+ID: 42 , NAME: William The Conqueror, TITLE : King of England
+
+Enter one of the above ID--Will return a wrong answer otherwise 
+42
+William The Conqueror 's children is/are':
+Robert Curthose , Duke of Normandy
+William II , King of England
+Henry I , King of England
+Adela
